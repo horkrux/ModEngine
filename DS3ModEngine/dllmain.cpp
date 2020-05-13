@@ -266,7 +266,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     case DLL_PROCESS_ATTACH:
         //DisableThreadLibraryCalls(hModule);
         InitInstance(hModule);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)MainThread, hModule, NULL, NULL);
+
+		if (GetPrivateProfileIntW(L"gameplay", L"showCustomDebugMenu", 0, L".\\modengine.ini") == 1)
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)MainThread, hModule, NULL, NULL);
+
         break;
     case DLL_PROCESS_DETACH:
         ExitInstance();

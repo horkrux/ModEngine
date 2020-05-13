@@ -5,7 +5,7 @@
 
 BOOL ApplyBonfireSacrificePatch()
 {
-	BYTE sacrificePatch[6] = {0xC6, 0x41, 0x10, 0x01, 0x90, 0x90};
+	BYTE sacrificePatch[6] = { 0xC6, 0x41, 0x10, 0x01, 0x90, 0x90 };
 
 	DWORD oldProtect;
 
@@ -19,9 +19,72 @@ BOOL ApplyBonfireSacrificePatch()
 	return true;
 }
 
+BOOL ApplyChrDbgDrawPatch()
+{
+	BYTE drawPatch[4] = { 0xB1, 0x01, 0x90, 0x90 };
+	DWORD oldProtect;
+	//0F B6 4F 65 E8 42 0D F3 FF 88 47 65
+	unsigned short scanBytes[12] = { 0x0F, 0xB6, 0x4F, 0x65, 0xE8, 0x42, 0x0D, 0xF3, 0xFF, 0x88, 0x47, 0x65 };
+	LPVOID addr = AOBScanner::GetSingleton()->Scan(scanBytes, 12);
+	if (!VirtualProtect(addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect))
+		return false;
+	memcpy(addr, drawPatch, 4); //0x1408D8045
+	VirtualProtect(addr, 4, oldProtect, &oldProtect);
+
+	return true;
+}
+
+BOOL ApplyBlockDebugFontDrawPatch()
+{
+	//74 1E 48 8B 07 48 8B CF FF 50 28
+	BYTE fontPatch[2] = { 0xEB, 0x1E };
+	DWORD oldProtect;
+	unsigned short scanBytes[11] = { 0x74, 0x1E, 0x48, 0x8B, 0x07, 0x48, 0x8B, 0xCF, 0xFF, 0x50, 0x28 };
+	LPVOID addr = AOBScanner::GetSingleton()->Scan(scanBytes, 11);
+	if (!VirtualProtect(addr, 2, PAGE_EXECUTE_READWRITE, &oldProtect))
+		return false;
+	memcpy(addr, fontPatch, 2); //0x142321374
+	VirtualProtect(addr, 2, oldProtect, &oldProtect);
+
+	return true;
+}
+
+BOOL ApplyBlockMouseAquirePatch()
+{
+	//0F 88 5B FF FF FF 48 8B 8B 98 01 00 00
+	BYTE fontPatch[6] = { 0xE9, 0x5C, 0xFF, 0xFF, 0xFF, 0x90 };
+	DWORD oldProtect;
+	unsigned short scanBytes[13] = { 0x0F, 0x88, 0x5B, 0xFF, 0xFF, 0xFF, 0x48, 0x8B, 0x8B, 0x98, 0x01, 0x00, 0x00 };
+	LPVOID addr = AOBScanner::GetSingleton()->Scan(scanBytes, 13);
+	if (!VirtualProtect(addr, 6, PAGE_EXECUTE_READWRITE, &oldProtect))
+		return false;
+	memcpy(addr, fontPatch, 6); //0x14182E713
+	VirtualProtect(addr, 6, oldProtect, &oldProtect);
+
+	return true;
+}
+
+BOOL ApplyMouseCursorPatch()
+{
+	//75 11 0F 1F 44 00 00
+	BYTE cursorPatch[2] = { 0xEB, 0x11 };
+	DWORD oldProtect;
+	unsigned short scanBytes[7] = { 0x75, 0x11, 0x0F, 0x1F, 0x44, 0x00, 0x00 };
+	LPVOID addr = AOBScanner::GetSingleton()->Scan(scanBytes, 7);
+	if (!VirtualProtect(addr, 2, PAGE_EXECUTE_READWRITE, &oldProtect))
+		return false;
+	memcpy(addr, cursorPatch, 2); //0x140F056A9
+	VirtualProtect(addr, 2, oldProtect, &oldProtect);
+
+	return true;
+}
+
+
+
 BOOL ApplyGameplayPatches()
 {
 	bool sacrificePatch = (GetPrivateProfileIntW(L"gameplay", L"restoreBonfireSacrifice", 0, L".\\modengine.ini") == 1);
+	bool debugMenu = (GetPrivateProfileIntW(L"gameplay", L"showCustomDebugMenu", 0, L".\\modengine.ini") == 1);
 
 	if (sacrificePatch)
 	{
@@ -31,6 +94,31 @@ BOOL ApplyGameplayPatches()
 			return false;
 		}
 	}
+
+	if (debugMenu)
+	{
+		// Prevent crashes when drawing certain elements
+		if (!ApplyBlockDebugFontDrawPatch())
+		{
+			return false;
+		}
+
+		if (!ApplyChrDbgDrawPatch())
+		{
+			return false;
+		}
+
+		if (!ApplyBlockMouseAquirePatch())
+		{
+			return false;
+		}
+
+		if (!ApplyMouseCursorPatch())
+		{
+			return false;
+		}
+	}
+
 	return true;
 }
 

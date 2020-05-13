@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{D31E2947-571D-4C0E-8347-2B632D06B1C2}</ProjectGuid>
     <RootNamespace>DS3ModEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <CLRSupport>false</CLRSupport>
@@ -121,6 +121,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AOBScanner.h" />
+    <ClInclude Include="ChrIns.h" />
     <ClInclude Include="d3d11hook.h" />
     <ClInclude Include="dinput8\dinput.h" />
     <ClInclude Include="dinput8\dinputWrapper.h" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AOBScanner.cpp" />
+    <ClCompile Include="ChrIns.cpp" />
     <ClCompile Include="d3d11hook.cpp" />
     <ClCompile Include="dinput8\dinputWrapper.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -164,6 +166,7 @@
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
+    <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="InputHook.cpp" />
     <ClCompile Include="LooseParams.cpp" />

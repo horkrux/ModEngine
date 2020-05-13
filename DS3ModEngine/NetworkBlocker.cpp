@@ -17,6 +17,7 @@ INT __stdcall tWSAStartup(WORD wVersionRequested, void* lpWSAData)
 
 BOOL BlockNetworkConnection()
 {
+	//Sleep(10000);
 	wprintf(L"[ModEngine] Blocking winsocket startup\r\n");
 	if (MH_CreateHookApi(L"ws2_32", "WSAStartup", &tWSAStartup, reinterpret_cast<LPVOID*>(&fpWsaStartup)) != MH_OK)
 		return false;

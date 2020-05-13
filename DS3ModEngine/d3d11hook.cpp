@@ -12,6 +12,8 @@
 const int OpenMenuKey = VK_F9;
 const int UninjectLibraryKey = VK_DELETE;
 
+extern bool notifyEnd;
+
 #include "Menu.h"
 #include "InputHook.h"
 
@@ -183,6 +185,7 @@ DWORD __stdcall HookDX11_Init()
 	g_pSwapChain->Release();
 
 	ImplHookDX11_Shutdown();
+	ImGui::DestroyContext();
 	inputHook.Remove(g_hWnd);
 
 	Beep(220, 100);

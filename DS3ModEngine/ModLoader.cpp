@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "AOBScanner.h"
 #include <stdio.h>
+#include <string>
 #include <wchar.h>
 #include <Shlwapi.h>
 #include <concurrent_unordered_set.h>
